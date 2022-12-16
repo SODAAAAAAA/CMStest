@@ -1,6 +1,6 @@
 import API from "./api.js"
 
-let getBookList = API.apiCall(API['getBookList'], {
+let getBookList = await API.apiCall(API['getBookList'], {
     rev:"",
     sch:[],
     grd:[],
@@ -8,6 +8,6 @@ let getBookList = API.apiCall(API['getBookList'], {
     brand:[],
     is_ok:"",
     is_activ:""
-}).then(response => {
-    console.log(response)
 });
+
+console.log(getBookList)
