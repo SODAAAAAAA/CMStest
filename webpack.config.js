@@ -6,7 +6,7 @@ module.exports = {
     output: { path: path.resolve(__dirname, 'public') },
     plugins: [
         new HTMLWebpackPlugin({
-            template: path.resolve(__dirname, 'src', 'index.html'),
+            template: './src/index.html',
         })
     ],
     module: {
