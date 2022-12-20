@@ -1,17 +1,13 @@
 // select 박스 생성
-// .value로 선택값 가져오기
-
-// data : ["교재 유형 전체", "개념서", "유형서", "아르케 초등", "아르케 중등"]
-// is_ok : ["검수 여부 전체", "검수 완료", "검수 대기"] / ["0", "1"]
-// is_activ : ["노출여부 전체", "교재숨김", "교재노출"]
 
 export class SelectBox {
-    constructor(data) {
+    constructor(data, location) {
         this.option = data
-        this.value = null //미완
+        this.location = location
+        this.value = this.create()
     }
 
-    create(location) {
+    create() {
         let selectBox = document.createElement('select')
         let optionValue = this.option
 
@@ -21,65 +17,46 @@ export class SelectBox {
             selectBox.appendChild(option)
         }
 
-        location.appendChild(selectBox)
+        this.value = selectBox.options[selectBox.selectedIndex].text
 
-        this.value = selectBox.value
+        selectBox.onchange = () => {
+            this.value = selectBox.value
+            console.log(this.value)
+            return this.value
+        }
+        
+        this.location.appendChild(selectBox)
+        return this.value
     }
 }
 
 // alert 레이어
 export function alertOpen(data) {
-    let alertObj = {
-        cancel : {
-            text : ['변경사항이 있습니다.', '저장하지 않고 취소하시겠습니까?'],
-            button : ['확인', '취소']
-        },
-        delete : {
-            text : ['현재의 교재를', '정말 삭제하시겠습니까?'],
-            button : ['확인', '취소']
-        },
-        save : {
-            text : ['교재가 저장되었습니다.'],
-            button : ['확인']
-        },
-        change : {
-            text : ['현재 교재의 섬네일이 있습니다.', '새로 변경하시겠습니까?'],
-            button : ['확인', '취소']
-        },
+    let alertBox = document.querySelector('.alert')
+
+    alertBox.classList.remove('out')
+    document.querySelector('.alert-middle').textContent = '';
+
+    for(let i = 0; i < data.text.length; i++) {
+        let alertSentence = document.createElement('p')
+        alertSentence.innerText = data.text[i]
+        alertBox.querySelector('.alert-middle').appendChild(alertSentence)
     }
 
-    let alertContents = alertObj[data]
+    let cancelBtn = document.querySelector('.alert-bottom .cancel-btn')
+    if(data.button.length < 2) {
+        cancelBtn.style.display = 'none'
+    } else {
+        cancelBtn.style.display = 'inline'
+    }
 
-    if(alertContents) {
-        if(document.querySelector('.alert')) {
-            document.querySelector('.alert').remove();
-        }
+    for(let i = 0; i < document.querySelectorAll('.alert-bottom button').length; i++) {
+        document.querySelectorAll('.alert-bottom button')[i].onclick = data.function[i]
+    }
 
-        let alertBox = document.createElement('div')
-        alertBox.setAttribute('class', 'alert')
-
-        alertBox.innerHTML = `<div class="alert-top"><button>X</button></div>
-        <div class="alert-middle"></div>
-        <div class="alert-bottom"></div>`
-
-        for(let i = 0; i < alertContents.text.length; i++) {
-            let alertSentence = document.createElement('p')
-            alertSentence.innerText = alertContents.text[i]
-            alertBox.querySelector('.alert-middle').appendChild(alertSentence)
-        }
-
-        for(let i = 0; i < alertContents.button.length; i++) {
-            let alertButton = document.createElement('button')
-            alertButton.innerText = alertContents.button[i]
-            alertBox.querySelector('.alert-bottom').appendChild(alertButton)
-        }
-
-        document.querySelector('#root').appendChild(alertBox)
-
-        for(let i = 0; i < alertBox.querySelectorAll('button').length; i++) {
-            alertBox.querySelectorAll('button')[i].addEventListener('click',
-            () => {document.querySelector('.alert').classList.add('out');})
-        }
+    for(let i = 0; i < alertBox.querySelectorAll('button').length; i++) {
+        alertBox.querySelectorAll('button')[i].addEventListener('click',
+        () => {document.querySelector('.alert').classList.add('out');})
     }
 }
 
