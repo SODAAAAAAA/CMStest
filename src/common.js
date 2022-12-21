@@ -4,29 +4,26 @@ export class SelectBox {
     constructor(data, location) {
         this.option = data
         this.location = location
-        this.value = this.create()
+        this.create()
     }
 
     create() {
-        let selectBox = document.createElement('select')
+        this.selectBox = document.createElement('select')
         let optionValue = this.option
 
         for(let i = 0; i < optionValue.length; i++) {
             let option = document.createElement('option')
             option.innerText = optionValue[i]
-            selectBox.appendChild(option)
+            this.selectBox.appendChild(option)
         }
 
-        this.value = selectBox.options[selectBox.selectedIndex].text
+        this.value = this.selectBox.options[this.selectBox.selectedIndex].text
 
-        selectBox.onchange = () => {
-            this.value = selectBox.value
-            console.log(this.value)
-            return this.value
+        this.selectBox.onchange = () => {
+            this.value = this.selectBox.value
         }
         
-        this.location.appendChild(selectBox)
-        return this.value
+        this.location.appendChild(this.selectBox)
     }
 }
 
@@ -54,29 +51,38 @@ export function alertOpen(data) {
         document.querySelectorAll('.alert-bottom button')[i].onclick = data.function[i]
     }
 
-    for(let i = 0; i < alertBox.querySelectorAll('button').length; i++) {
-        alertBox.querySelectorAll('button')[i].addEventListener('click',
-        () => {document.querySelector('.alert').classList.add('out');})
-    }
+    alertBox.querySelector('.alert-top button').addEventListener('click',
+        () => {document.querySelector('.alert').classList.add('out');}
+    )
 }
 
 // 등록시 저장파일명 문자열 파싱
 
-// rev:"",
-// sch:[],
-// grd:[],
-// sem:"",
-// brand:[],
+export function fileName() {
+    let rev = document.querySelector('.rev .checked button').textContent.substring(2)
+    let sch = document.querySelector('.sch .checked button').textContent
+    let grd = document.querySelector('.grd .checked button').textContent
+    let sem = document.querySelector('.sem .checked button').textContent
+    let brand = document.querySelector('.brand > .checked button').textContent
 
-export function fileName(data) {
-    let rev = data.rev
-    let sch = data.sch
-    let grd = data.grd
-    let sem = data.sem
-    let brand = data.brand
+    switch(sch){
+        case '초': sch = 'E'; break;
+        case '중': sch = 'M'; break;
+        case '고': sch = 'H'; break;
+    }
 
-    console.log(data)
-    console.log(`bookcover_${rev}${sch}${grd}${sem}${brand}.jpg`)
+    let brandObj = {
+        '개념서' : 'CO',
+        '아르케' : 'AR',
+        '뜨레스' : 'TR',
+        '엑사스' : 'HE',
+        '노벰' : 'NO',
+    }
+    brand = brandObj[brand]
+    if(document.querySelector('.brand > .checked ul')) {
+        brand = `${brand.substring(0, 1)}${document.querySelector('.brand .checked .checked button').textContent}`
+    }
 
-    return `bookcover_${rev}${sch}${grd}${sem}${brand}.jpg`
+    let name = `bookcover_${rev}${sch}${grd}${sem}${brand}.jpg`
+    return name
 }

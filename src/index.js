@@ -17,13 +17,7 @@ console.log(getBookList)
 
 
 
-// new SelectBox(["교재 유형 전체", "개념서", "유형서", "아르케 초등", "아르케 중등"], document.querySelector('body')).create()
-
-let selectValue = new SelectBox(["교재 유형 전체", "개념서", "유형서", "아르케 초등", "아르케 중등"], document.querySelector('body')).value
-
-console.log(selectValue)
-
-document.querySelector('select').onclick = () => {console.log(selectValue)}
+console.log(new SelectBox(["교재 유형 전체", "개념서", "유형서", "아르케 초등", "아르케 중등"], document.querySelector('body')).value)
 
 
 
@@ -43,10 +37,4 @@ alertOpen({
 
 
 
-fileName({
-    rev: "15",
-    sch: "E",
-    grd: "5",
-    sem: "1",
-    brand: "COA"
-})
+fileName()
