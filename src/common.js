@@ -65,7 +65,7 @@ export function fileName() {
     let sch = filter.querySelector('.school .checked button').textContent
     let grd = filter.querySelector('.grade .checked button').textContent
     let sem = filter.querySelector('.sem .checked button').textContent
-    let brand = filter.querySelector('.book > .checked button').textContent
+    let brand = filter.querySelector('.brand > .checked button').textContent
 
     switch(sch){
         case '초': sch = 'E'; break;

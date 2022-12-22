@@ -1,12 +1,132 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-<script defer src="index.js"></script></head>
-<body>
-    에반데
-</body>
-</html>
+<html lang="ko"><head><script defer src="index.js"></script><link href="style.css" rel="stylesheet"></head>
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>CMS</title>
+        <link rel="stylesheet" href="css/reset.css" class="stylesheet" />
+    <body>
+        <div id="root">
+            <header>
+                <h1>Gplum CMS</h1>
+                <nav>
+                    <a href="" class="checked">교재</a>
+                    <a href="">영상</a>
+                    <a href="">문항</a>
+                    <a href="">시험지</a>
+                </nav>
+                <p>김수학</p>
+                <button>로그아웃</button>
+            </header>
+            <div class="container">
+                <div class="filter">
+                    <ul><li><button id="btn-all">전체</button></li></ul>
+                    <ul class="school">
+                        <li class="checked"><button>초</button></li>
+                        <li><button>중</button></li>
+                        <li><button>고</button></li>
+                    </ul>
+                    <ul class="year">
+                        <li class="checked"><button>2015</button></li>
+                        <li><button>2022</button></li>
+                    </ul>
+                    <ul class="grade">
+                        <li><button>1</button></li>
+                        <li><button>2</button></li>
+                        <li class="checked"><button>3</button></li>
+                        <li><button>4</button></li>
+                        <li><button>5</button></li>
+                        <li><button>6</button></li>
+                    </ul>
+                    <ul class="semester">
+                        <li class="checked"><button>1</button></li>
+                        <li><button>2</button></li>
+                    </ul>
+                    <ul class="brand">
+                        <li>
+                            <button>개념서</button>
+                        </li>
+                        <li class="checked">
+                            <button>아르케</button>
+                            <ul>
+                                <li><button>1</button></li>
+                                <li class="checked"><button>2</button></li>
+                                <li><button>3</button></li>
+                                <li><button>4</button></li>
+                                <li><button>5</button></li>
+                                <li><button>6</button></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <button>뜨레스</button>
+                            <ul>
+                                <li><button>1</button></li>
+                                <li><button>2</button></li>                           
+                            </ul>
+                        </li>
+                        <li>
+                            <button>엑사스</button>
+                            <ul>
+                                <li><button>1</button></li>
+                                <li><button>2</button></li>                              
+                            </ul>
+                        </li>
+                        <li>
+                            <button>노벰</button>
+                            <ul>
+                                <li><button>1</button></li>
+                                <li><button>2</button></li>                              
+                            </ul>
+                        </li>  
+                    </ul>
+                </div>
+                <div id="contents">
+                    <!-- <div class="select">
+                        <button class="select-value">셀렉트박스</button>
+                        <ul class="option">
+                            <li>
+                                <button>셀렉트버튼1</button>
+                            </li>
+                            <li>
+                                <button>셀렉트버튼2</button>
+                            </li>
+                            <li>
+                                <button>셀렉트버튼3</button>
+                            </li>
+                        </ul>
+                    </div> -->
+                    <!-- <div class="book-info">
+                        <div class="left">
+                            <div class="title">
+                                <input type="text">
+                                <input type="checkbox" id="auto-write">
+                                <label for="auto-write">자동 입력</label>
+                            </div>
+                            <div class="bookcover">
+                                <div>표지</div>
+                                <div>
+                                    <button class="upload">↑</button>
+                                    <button class="delete">×</button>
+                                </div>
+                            </div>
+                            <div class="input-box"></div>
+                        </div>
+                        <div class="right"></div>
+                    </div> -->
+                </div>
+            </div>
+            <!-- <div class="alert">
+                <div class="alert-top">
+                    <button>X</button>
+                </div>
+                <div class="alert-middle">                   
+                </div>
+                <div class="alert-bottom">
+                    <button>확인</button>
+                    <button class="cancel-btn">취소</button>
+                </div>
+            </div>             -->
+        </div>
+    </body>
+</html>        
