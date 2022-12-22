@@ -59,11 +59,13 @@ export function alertOpen(data) {
 // 등록시 저장파일명 문자열 파싱
 
 export function fileName() {
-    let rev = document.querySelector('.rev .checked button').textContent.substring(2)
-    let sch = document.querySelector('.sch .checked button').textContent
-    let grd = document.querySelector('.grd .checked button').textContent
-    let sem = document.querySelector('.sem .checked button').textContent
-    let brand = document.querySelector('.brand > .checked button').textContent
+    let filter = document.querySelector('.filter')
+
+    let rev = filter.querySelector('.year .checked button').textContent.substring(2)
+    let sch = filter.querySelector('.school .checked button').textContent
+    let grd = filter.querySelector('.grade .checked button').textContent
+    let sem = filter.querySelector('.sem .checked button').textContent
+    let brand = filter.querySelector('.book > .checked button').textContent
 
     switch(sch){
         case '초': sch = 'E'; break;
@@ -79,10 +81,12 @@ export function fileName() {
         '노벰' : 'NO',
     }
     brand = brandObj[brand]
-    if(document.querySelector('.brand > .checked ul')) {
+    if(document.querySelector('.brand > .checked div')) {
         brand = `${brand.substring(0, 1)}${document.querySelector('.brand .checked .checked button').textContent}`
     }
 
     let name = `bookcover_${rev}${sch}${grd}${sem}${brand}.jpg`
+
+    console.log(name)
     return name
 }

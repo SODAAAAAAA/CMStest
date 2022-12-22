@@ -1,128 +1,114 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <div id="root">
-        <div>
-            <ul class="sch">
-                <li class="checked">
-                    <button>초</button>
-                </li>
-                <li>
-                    <button>중</button>
-                </li>
-                <li>
-                    <button>고</button>
-                </li>
-            </ul>
-            <ul class="rev">
-                <li class="checked">
-                    <button>2015</button>
-                </li>
-                <li>
-                    <button>2022</button>
-                </li>
-            </ul>
-            <ul class="grd">
-                <li class="checked">
-                    <button>3</button>
-                </li>
-                <li>
-                    <button>4</button>
-                </li>
-                <li>
-                    <button>5</button>
-                </li>
-                <li>
-                    <button>6</button>
-                </li>
-            </ul>
-            <ul class="sem">
-                <li class="checked">
-                    <button>1</button>
-                </li>
-                <li>
-                    <button>2</button>
-                </li>
-            </ul>
-            <ul class="brand">
-                <li>
-                    <button>개념서</button>
-                </li>
-                <li>
-                    <button>아르케</button>
-                    <ul>
-                        <li>
-                            <button>1</button>
-                        </li>
-                        <li>
-                            <button>2</button>
-                        </li>
-                        <li>
-                            <button>3</button>
-                        </li>
-                        <li>
-                            <button>4</button>
-                        </li>
-                        <li>
-                            <button>5</button>
-                        </li>
-                        <li>
-                            <button>6</button>
-                        </li>
+<html lang="ko">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>CMS</title>
+        <link rel="stylesheet" href="css/reset.css" class="stylesheet" />
+    <body>
+        <div id="root">
+            <header>
+                <h1>Gplum CMS</h1>
+                <nav>
+                    <a href="" class="checked">교재</a>
+                    <a href="">영상</a>
+                    <a href="">문항</a>
+                    <a href="">시험지</a>
+                </nav>
+                <p>김수학</p>
+                <button>로그아웃</button>
+            </header>
+            <div class="container">
+                <div class="filter">
+                    <ul><li><button id="btn-all">전체</button></li></ul>
+                    <ul class="school">
+                        <li><button>초</button></li>
+                        <li><button>중</button></li>
+                        <li class="checked"><button>고</button></li>
                     </ul>
-                </li>
-                <li class="checked">
-                    <button>뜨레스</button>
-                    <ul>
+                    <ul class="year">
+                        <li><button>2015</button></li>
+                        <li><button>2022</button></li>
+                    </ul>
+                    <ul class="grade disabled">
+                        <li><button>1</button></li>
+                        <li><button>2</button></li>
+                        <li class="checked"><button>3</button></li>
+                        <li><button>4</button></li>
+                        <li><button>5</button></li>
+                        <li><button>6</button></li>
+                    </ul>
+                    <ul class="semester">
+                        <li><button>1</button></li>
+                        <li><button>2</button></li>
+                    </ul>
+                    <ul class="book">
                         <li>
-                            <button>1</button>
+                            <button>개념서</button>
                         </li>
                         <li class="checked">
-                            <button>2</button>
+                            <button>아르케</button>
+                            <ul>
+                                <li><button>1</button></li>
+                                <li><button>2</button></li>
+                                <li><button>3</button></li>
+                                <li><button>4</button></li>
+                                <li><button>5</button></li>
+                                <li><button>6</button></li>
+                            </ul>
                         </li>
+                        <li>
+                            <button>뜨레스</button>
+                            <ul>
+                                <li><button>1</button></li>
+                                <li><button>2</button></li>                           
+                            </ul>
+                        </li>
+                        <li>
+                            <button>엑사스</button>
+                            <ul>
+                                <li><button>1</button></li>
+                                <li><button>2</button></li>                              
+                            </ul>
+                        </li>
+                        <li>
+                            <button>노벰</button>
+                            <ul>
+                                <li><button>1</button></li>
+                                <li><button>2</button></li>                              
+                            </ul>
+                        </li>  
                     </ul>
-                </li>
-                <li>
-                    <button>엑사스</button>
-                    <ul>
-                        <li>
-                            <button>1</button>
-                        </li>
-                        <li>
-                            <button>2</button>
-                        </li>
-                    </ul>
-                </li>
-                <li>
-                    <button>노벰</button>
-                    <ul>
-                        <li>
-                            <button>1</button>
-                        </li>
-                        <li>
-                            <button>2</button>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
-        </div>
-        <div class="alert">
-            <div class="alert-top"><button>X</button></div>
-            <div class="alert-middle">
-                <p>변경사항이 있습니다.</p>
-                <p>저장하지 않고 취소하시겠습니까?</p>
+                </div>
+                <div id="contents">
+                    <div class="select">
+                        <button class="select-value">셀렉트박스</button>
+                        <ul class="option">
+                            <li>
+                                <button>셀렉트버튼1</button>
+                            </li>
+                            <li>
+                                <button>셀렉트버튼2</button>
+                            </li>
+                            <li>
+                                <button>셀렉트버튼3</button>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
             </div>
-            <div class="alert-bottom">
-                <button>확인</button>
-                <button class="cancel-btn">취소</button>
-            </div>
+            <div class="alert">
+                <div class="alert-top">
+                    <button>X</button>
+                </div>
+                <div class="alert-middle">                   
+                </div>
+                <div class="alert-bottom">
+                    <button>확인</button>
+                    <button class="cancel-btn">취소</button>
+                </div>
+            </div>            
         </div>
-    </div>
-</body>
-</html>
+    </body>
+</html>        

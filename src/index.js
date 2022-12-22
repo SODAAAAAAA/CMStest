@@ -1,5 +1,6 @@
 
 import "./style.css";
+import CMS_math_book from "./filter";
 import {SelectBox, alertOpen, fileName} from "./common.js";
 import API from "./api.js";
 
@@ -17,8 +18,7 @@ console.log(getBookList)
 
 
 
-console.log(new SelectBox(["교재 유형 전체", "개념서", "유형서", "아르케 초등", "아르케 중등"], document.querySelector('body')).value)
-
+new SelectBox(["교재 유형 전체", "개념서", "유형서", "아르케 초등", "아르케 중등"], document.querySelector('body'))
 
 
 function hi() {
@@ -35,6 +35,6 @@ alertOpen({
     function : [hi, bye]
 })
 
+console.log(CMS_math_book)
 
-
-fileName()
+// fileName()

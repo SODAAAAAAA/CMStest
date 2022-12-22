@@ -22,8 +22,8 @@ const API = {
         getPaperQASInfo : 'getPaperQASInfo',
         setPaperQASInfo : 'setPaperQASInfo',
     },
-    apiCall : async function(api, option) {
-        return await new Promise (resolve => {
+    apiCall : function(api, option) {
+        return new Promise (resolve => {
             axios.post(`./api/cms/${api}.php`, option)
             .then((response) => {
                 resolve(response.data)
