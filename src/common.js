@@ -28,6 +28,7 @@ export class SelectBox {
 }
 
 // alert 레이어
+// 
 export function alertOpen(data) {
     let alertBox = document.querySelector('.alert')
 
