@@ -1,10 +1,11 @@
 import * as CM from "../filter";
 import {SelectBox, alertOpen} from "../common";
 import * as proto from "../data";
+import API from "../api";
 
 const Filter = new CM.FilterButton(false,"set");
 let setInfo = false;
-let register = false;
+let register = false; // 등록/수정 여부 true: 등록
 export default function setBookInfo(){
 
     const filterButtons = document.getElementsByClassName("filter")[0].getElementsByTagName("button");
@@ -67,16 +68,6 @@ function registerInfo(data) {
     titleIntput.disabled = true
     bookInfoBox.querySelector('.title div').appendChild(titleIntput);
 
-    
-
-    bookInfoBox.querySelector('#auto-write').onclick = function(){
-        if(!bookInfoBox.querySelector('#auto-write').checked) {
-            titleIntput.disabled = false;
-        } else {
-            titleIntput.disabled = true;
-        }
-    }
-
     // 셀렉트박스
     let selectObj = [
         ["교재 유형 전체", "개념서", "유형서", "개념유형서"],
@@ -92,6 +83,14 @@ function registerInfo(data) {
     let brand = CM.getBookKor(data.brand[0])
     titleIntput.setAttribute("value", `[${school}${data.grade}-${data.semester}] ${brand}`)
 
+    bookInfoBox.querySelector('#auto-write').onclick = function(){
+        if(!bookInfoBox.querySelector('#auto-write').checked) {
+            titleIntput.disabled = false;
+        } else {
+            titleIntput.disabled = true;
+            titleIntput.value = `[${school}${data.grade}-${data.semester}] ${brand}`
+        }
+    }
 
     if(brand.includes('개념서')){
         bookInfoBox.querySelector('.right .select-value').innerText = '개념서'
@@ -113,20 +112,19 @@ function registerInfo(data) {
         let title = proto.c_title(bk_type, i)
         let code = proto.mdl_code(bk_type, i)
         
-        let inputWrap = document.createElement('div')
-        inputWrap.innerHTML = `<p>${title}:</p>`
-        let input = document.createElement('input')
-        input.setAttribute('id', code)
-        input.setAttribute('placeholder', '총 수량 입력')
-        inputWrap.appendChild(input)
-        bookInfoBox.querySelector('.input-box').appendChild(inputWrap)
+        if(code == 'VD' || code == 'QA' || code == 'CC') {
+            let inputWrap = document.createElement('div')
+            inputWrap.innerHTML = `<p>${title}:</p>`
+            let input = document.createElement('input')
+            input.setAttribute('id', code)
+            input.setAttribute('placeholder', '총 수량 입력')
+            inputWrap.appendChild(input)
+            bookInfoBox.querySelector('.input-box').appendChild(inputWrap)
+        }
     }
     
     //alert
-    let alertBtn = bookInfoBox.querySelectorAll('.bottom .btn')
-    for(let i = 0; i < alertBtn.length; i++) {
-        alertBtn[i].addEventListener('click', event => alertOpen(alertList[alertBtn[i].value]))
-    }
+    bookInfoBox.querySelectorAll('.bottom .btn-green').addEventListener('click', event => alertOpen(alertList.save))
 
     if(bookInfoBox.querySelector('.bookcover div:first-child').children.length) {
         bookInfoBox.querySelector('.upload').addEventListener('click', event => alertOpen(alertList.upload))
@@ -136,6 +134,15 @@ function registerInfo(data) {
 
 
 function fixInfo(data) {
+
+    //api로 기본값 채우기
+    let getBookInfo = API.apiCall(API.url['getBookInfo'], {
+        bk_no:27,
+        book:"",
+    });
+
+    console.log(getBookInfo)
+
     //박스 생성
     const bookInfoBox = document.createElement('div')
     bookInfoBox.setAttribute('class', 'book-info')
@@ -173,16 +180,6 @@ function fixInfo(data) {
     titleIntput.disabled = true
     bookInfoBox.querySelector('.title div').appendChild(titleIntput);
 
-    
-
-    bookInfoBox.querySelector('#auto-write').onclick = function(){
-        if(!bookInfoBox.querySelector('#auto-write').checked) {
-            titleIntput.disabled = false;
-        } else {
-            titleIntput.disabled = true;
-        }
-    }
-
     // 셀렉트박스
     let selectObj = [
         ["교재 유형 전체", "개념서", "유형서", "개념유형서"],
@@ -198,6 +195,14 @@ function fixInfo(data) {
     let brand = CM.getBookKor(data.brand[0])
     titleIntput.setAttribute("value", `[${school}${data.grade}-${data.semester}] ${brand}`)
 
+    bookInfoBox.querySelector('#auto-write').onclick = function(){
+        if(!bookInfoBox.querySelector('#auto-write').checked) {
+            titleIntput.disabled = false;
+        } else {
+            titleIntput.disabled = true;
+            titleIntput.value = `[${school}${data.grade}-${data.semester}] ${brand}`
+        }
+    }
 
     if(brand.includes('개념서')){
         bookInfoBox.querySelector('.right .select-value').innerText = '개념서'
@@ -219,19 +224,27 @@ function fixInfo(data) {
         let title = proto.c_title(bk_type, i)
         let code = proto.mdl_code(bk_type, i)
         
-        let inputWrap = document.createElement('div')
-        inputWrap.innerHTML = `<p>${title}:</p>`
-        let input = document.createElement('input')
-        input.setAttribute('id', code)
-        input.setAttribute('placeholder', '총 수량 입력')
-        inputWrap.appendChild(input)
-        bookInfoBox.querySelector('.input-box').appendChild(inputWrap)
+        if(code == 'VD' || code == 'QA' || code == 'CC') {
+            let inputWrap = document.createElement('div')
+            inputWrap.innerHTML = `<p>${title}:</p>`
+            let input = document.createElement('input')
+            input.setAttribute('id', code)
+            input.setAttribute('placeholder', '총 수량 입력')
+            inputWrap.appendChild(input)
+            bookInfoBox.querySelector('.input-box').appendChild(inputWrap)
+        }
     }
     
     //alert
     let alertBtn = bookInfoBox.querySelectorAll('.bottom .btn')
-    for(let i = 0; i < alertBtn.length; i++) {
+
+    for(let i = 1; i < alertBtn.length; i++) {
         alertBtn[i].addEventListener('click', event => alertOpen(alertList[alertBtn[i].value]))
+    }
+
+    //값 변경 유무
+    if(getBookInfo){
+        bookInfoBox.querySelectorAll('.bottom .btn-white').addEventListener('click', event => alertOpen(alertList.cancel))
     }
 
     if(bookInfoBox.querySelector('.bookcover div:first-child').children.length) {

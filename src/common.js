@@ -69,9 +69,12 @@ export function alertOpen(data) {
         document.querySelectorAll('.alert-bottom button')[i].onclick = data.function[i]
     }
 
-    alertBox.querySelector('.alert-top button').addEventListener('click',
-        () => {document.querySelector('.alert').classList.add('out');}
-    )
+    alertBox.querySelector('.alert-top button').addEventListener('click', alertClass)
+}
+
+function alertClass() {
+    document.querySelector('.alert').classList.add('out');
+    alertBox.querySelector('.alert-top button').removeEventListener('click', alertClass)
 }
 
 // 등록시 저장파일명 문자열 파싱
