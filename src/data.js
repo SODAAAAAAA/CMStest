@@ -1,5 +1,5 @@
 // 학습 프로토
-const Ref = {
+export const Ref = {
     Proto : {
         'CO' : [
             ['개념서 기본', '개념서 기본', null],
@@ -69,57 +69,4 @@ export function c_title(prt_code, cno){
 
 export function mdl_code(prt_code, cno){
     return protoCategory(prt_code, cno) ? Ref.Proto[prt_code][cno][2] : null;
-}
-
-
-// 책 유형별 문제&강의
-export const bookTypeInfo = {
-    CO : [
-        ['LE', '개념 강의'],
-        ['LV', '예제풀이 강의'],
-        ['PR', '개념 확인하기'],
-        ['CS', 'Skill-UP'],
-        ['CE', '단원 마무리']
-    ],
-    PA : [
-        ['PR', '유형 학습'],
-        ['CL', '맞춤 클리닉']
-    ],
-    CP : {
-        M : [
-            ['LE', '개념 강의'],
-            ['PR', '기본유형 익히기']
-        ],
-        E : [
-            ['LE', '개념 강의'],
-            ['LX', '개념확인 예제'],
-            ['PR', '기본기 다지기'],
-            ['PR2', '기본기 강화하기'],
-            ['CE', '단원 마무리']
-        ]
-    }
-}
-
-export function info_length(bk_type, school) {
-    if(bk_type == 'CP') {
-        return bookTypeInfo[bk_type][school].length
-    } else {
-        return bookTypeInfo[bk_type].length
-    }
-}
-
-export function info_title(bk_type, num, school){
-    if(bk_type == 'CP') {
-        return bookTypeInfo[bk_type][school][num][1]
-    } else {
-        return bookTypeInfo[bk_type][num][1]
-    }
-}
-
-export function info_code(bk_type, num, school){
-    if(bk_type == 'CP') {
-        return bookTypeInfo[bk_type][school][num][0]
-    } else {
-        return bookTypeInfo[bk_type][num][0]
-    }
 }

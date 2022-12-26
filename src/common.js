@@ -8,20 +8,37 @@ export class SelectBox {
     }
 
     create() {
-        this.selectBox = document.createElement('select')
+        this.selectBox = document.createElement('div')
+        this.selectBox.setAttribute('class', 'select')
         let optionValue = this.option
 
-        for(let i = 0; i < optionValue.length; i++) {
-            let option = document.createElement('option')
-            option.innerText = optionValue[i]
-            this.selectBox.appendChild(option)
+        this.selectBox.innerHTML = `<button class="select-value" type="button">${optionValue[0]}</button><ul class="option"></ul>`
+
+        for(let i = 1; i < optionValue.length; i++) {
+            let option = document.createElement('li')
+            option.innerHTML = `<button type="button">${optionValue[i]}</button>`
+            this.selectBox.querySelector('.option').appendChild(option)
         }
 
-        this.value = this.selectBox.options[this.selectBox.selectedIndex].text
+        this.value = this.selectBox.querySelector('.select-value').text
 
-        this.selectBox.onchange = () => {
-            this.value = this.selectBox.value
+        this.selectBox.onclick = (e) => {
+            this.selectBox.querySelector('.option').classList.toggle('active')
+            let selectBtn = this.selectBox.querySelectorAll('.option li button')
+
+            for(let i = 0; i < selectBtn.length; i++) {
+                if(e.target == selectBtn[i]) {
+                    this.value = e.target.textContent
+                    this.selectBox.querySelector('.select-value').innerText = this.value
+                }
+            }
         }
+
+        window.addEventListener('click', (e) => {
+            if(e.target !== this.selectBox.querySelector('.select-value')) {
+                this.selectBox.querySelector('.option').classList.remove('active')
+            }
+        })
         
         this.location.appendChild(this.selectBox)
     }

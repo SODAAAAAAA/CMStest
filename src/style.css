@@ -10,6 +10,7 @@
     padding: 10px;
     opacity: 0;
     animation: fadeIn forwards 0.3s;
+    background: #fff;
 }
 
 .alert.out {
@@ -102,14 +103,16 @@ input:not([type="checkbox"])::placeholder {
     color: #ccc;
 }
 
+input[type="file"] {
+    display: none;
+}
+
 .select {
     min-width: 140px;
-    height: 40px;
-    border-radius: 4px;
     background: #fff;
-    border: 1px solid #ccc;
     display: inline-block;
     position: relative;
+    padding-bottom: 4px;
 }
 
 .select-value {
@@ -117,19 +120,26 @@ input:not([type="checkbox"])::placeholder {
     letter-spacing: -0.68px;
     color: #666;
     width: 100%;
-    height: 100%;
+    height: 40px;
     padding: 10px;
     text-align: left;
+    border: 1px solid #ccc;
+    border-radius: 4px;
 }
 
 .option {
     position: absolute;
-    top: calc(100% + 4px);
+    top: 100%;
     left: 0;
     border-radius: 4px;
     background: #fff;
     border: 1px solid #ccc;
     padding: 4px;
+    display: none;
+}
+
+.option.active {
+    display: block;
 }
 
 .option button {
@@ -375,7 +385,7 @@ header button {
     padding: 20px;
 }
 
-.book-info {
+.book-info form {
     width: 1200px;
     margin: 0 auto;
     display: flex;
@@ -405,11 +415,19 @@ header button {
     text-align: center;
 }
 
+.book-info .title input:not([type="checkbox"]):disabled {
+    background: #dcdee0;
+}
+
 .book-info .bookcover {
     width: 40%;
     display: flex;
     justify-content: center;
     padding: 20px;
+}
+
+.book-info .bookcover .upload {
+    cursor: pointer;
 }
 
 .book-info .bookcover div:first-child {
@@ -424,7 +442,7 @@ header button {
     justify-content: space-between;
 }
 
-.book-info .bookcover button {
+.book-info .bookcover button, .book-info .bookcover label {
     font-size: 30px;
 }
 
@@ -444,11 +462,19 @@ header button {
     width: 40%;
 }
 
+.book-info .right .select {
+    margin-right: 4px;
+}
+
 .book-info .bottom {
     width: 100%;
     display: flex;
 }
 
+.book-info .bottom button {
+    margin-right: 4px;
+}
+
 .book-info .bottom button:last-child {
-    margin-left: auto;
+    margin: 0 0 0 auto;
 }
