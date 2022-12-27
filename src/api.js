@@ -23,13 +23,13 @@ const API = {
         setPaperQASInfo : 'setPaperQASInfo',
     },
     apiCall : function(api, option) {
-        return new Promise (resolve => {
+        return new Promise ((resolve, reject) => {
             axios.post(`./api/cms/${api}.php`, option)
             .then((response) => {
                 resolve(response.data)
             })
             .catch((error) => {
-                resolve(`ERROR - ${error.message}`)
+                reject(`ERROR - ${error.message}`)
             })
         })
     }

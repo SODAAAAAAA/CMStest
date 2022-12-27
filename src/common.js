@@ -72,7 +72,7 @@ export function alertOpen(data) {
     alertBox.querySelector('.alert-top button').addEventListener('click', alertClass)
 }
 
-function alertClass() {
+export function alertClass() {
     document.querySelector('.alert').classList.add('out');
     alertBox.querySelector('.alert-top button').removeEventListener('click', alertClass)
 }

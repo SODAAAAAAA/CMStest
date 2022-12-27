@@ -107,6 +107,12 @@ input[type="file"] {
     display: none;
 }
 
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
 .select {
     min-width: 140px;
     background: #fff;

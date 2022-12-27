@@ -1,11 +1,11 @@
 import * as CM from "../filter";
-import {SelectBox, alertOpen} from "../common";
+import * as common from "../common";
 import * as proto from "../data";
 import API from "../api";
 
 const Filter = new CM.FilterButton(false,"set");
 let setInfo = false;
-let register = false; // 등록/수정 여부 true: 등록
+let register = true; // 등록/수정 여부 true: 등록
 export default function setBookInfo(){
 
     const filterButtons = document.getElementsByClassName("filter")[0].getElementsByTagName("button");
@@ -75,7 +75,7 @@ function registerInfo(data) {
         ["검수 진행상태", "검수 완료", "검수 중", "검수 대기"]
     ]
     for(let i = 0; i < selectObj.length; i++) {
-        new SelectBox(selectObj[i], bookInfoBox.querySelector('.right'))
+        new common.SelectBox(selectObj[i], bookInfoBox.querySelector('.right'))
     }
 
     //타이틀 자동입력
@@ -112,11 +112,22 @@ function registerInfo(data) {
         let title = proto.c_title(bk_type, i)
         let code = proto.mdl_code(bk_type, i)
         
-        if(code == 'VD' || code == 'QA' || code == 'CC') {
+        switch(code){
+            case 'VD': code = 'LE'; break;
+            case 'QA': code = 'PR'; break;
+            case 'CC': code = 'CL'; break;
+        }
+
+        let codeArr = ['LE', 'LV', 'PR', 'CS', 'CE', 'CL', 'LX', 'PR2']
+        
+        if(codeArr.includes(code)) {
+            code = bookInfoBox.querySelector(`#${code}`) ? `${code}2` : code
+            
             let inputWrap = document.createElement('div')
             inputWrap.innerHTML = `<p>${title}:</p>`
             let input = document.createElement('input')
             input.setAttribute('id', code)
+            input.setAttribute('type', 'number')
             input.setAttribute('placeholder', '총 수량 입력')
             inputWrap.appendChild(input)
             bookInfoBox.querySelector('.input-box').appendChild(inputWrap)
@@ -124,10 +135,17 @@ function registerInfo(data) {
     }
     
     //alert
-    bookInfoBox.querySelectorAll('.bottom .btn-green').addEventListener('click', event => alertOpen(alertList.save))
+    // let inputValue = document.querySelectorAll('.input-box input')
+    // for(let i = 0; i < inputValue.length; i++) {
+    //     if(inputValue[i].value) {
+    //         bookInfoBox.querySelector('.bottom .btn-white').addEventListener('click', event => common.alertOpen(alertList.cancel))
+    //     }
+    // }
+
+    bookInfoBox.querySelector('.bottom .btn-green').addEventListener('click', event => common.alertOpen(alertList.save))
 
     if(bookInfoBox.querySelector('.bookcover div:first-child').children.length) {
-        bookInfoBox.querySelector('.upload').addEventListener('click', event => alertOpen(alertList.upload))
+        bookInfoBox.querySelector('.upload').addEventListener('click', event => common.alertOpen(alertList.upload))
     }
 }
 
@@ -139,9 +157,13 @@ function fixInfo(data) {
     let getBookInfo = API.apiCall(API.url['getBookInfo'], {
         bk_no:27,
         book:"",
-    });
-
-    console.log(getBookInfo)
+    }).then(function(result){
+        getBookInfo = result
+    })
+    
+    setTimeout(()=> {
+        console.log(getBookInfo)
+    }, 50)
 
     //박스 생성
     const bookInfoBox = document.createElement('div')
@@ -156,7 +178,7 @@ function fixInfo(data) {
                 </div>
             </div>
             <div class="bookcover">
-                <div></div>
+                <div><img src="${getBookInfo.bk_cover}" alt=""></div>
                 <div>
                     <input type="file" accept="image/*" id="file-upload">
                     <label class="upload" type="button" value="upload" for="file-upload">↑</label>
@@ -187,7 +209,7 @@ function fixInfo(data) {
         ["검수 진행상태", "검수 완료", "검수 중", "검수 대기"]
     ]
     for(let i = 0; i < selectObj.length; i++) {
-        new SelectBox(selectObj[i], bookInfoBox.querySelector('.right'))
+        new common.SelectBox(selectObj[i], bookInfoBox.querySelector('.right'))
     }
 
     //타이틀 자동입력
@@ -224,11 +246,22 @@ function fixInfo(data) {
         let title = proto.c_title(bk_type, i)
         let code = proto.mdl_code(bk_type, i)
         
-        if(code == 'VD' || code == 'QA' || code == 'CC') {
+        switch(code){
+            case 'VD': code = 'LE'; break;
+            case 'QA': code = 'PR'; break;
+            case 'CC': code = 'CL'; break;
+        }
+
+        let codeArr = ['LE', 'LV', 'PR', 'CS', 'CE', 'CL', 'LX', 'PR2']
+        
+        if(codeArr.includes(code)) {
+            code = bookInfoBox.querySelector(`#${code}`) ? `${code}2` : code
+
             let inputWrap = document.createElement('div')
             inputWrap.innerHTML = `<p>${title}:</p>`
             let input = document.createElement('input')
             input.setAttribute('id', code)
+            input.setAttribute('type', 'number')
             input.setAttribute('placeholder', '총 수량 입력')
             inputWrap.appendChild(input)
             bookInfoBox.querySelector('.input-box').appendChild(inputWrap)
@@ -239,16 +272,16 @@ function fixInfo(data) {
     let alertBtn = bookInfoBox.querySelectorAll('.bottom .btn')
 
     for(let i = 1; i < alertBtn.length; i++) {
-        alertBtn[i].addEventListener('click', event => alertOpen(alertList[alertBtn[i].value]))
+        alertBtn[i].addEventListener('click', event => common.alertOpen(alertList[alertBtn[i].value]))
     }
 
     //값 변경 유무
     if(getBookInfo){
-        bookInfoBox.querySelectorAll('.bottom .btn-white').addEventListener('click', event => alertOpen(alertList.cancel))
+        bookInfoBox.querySelector('.bottom .btn-white').addEventListener('click', event => common.alertOpen(alertList.cancel))
     }
 
     if(bookInfoBox.querySelector('.bookcover div:first-child').children.length) {
-        bookInfoBox.querySelector('.upload').addEventListener('click', event => alertOpen(alertList.upload))
+        bookInfoBox.querySelector('.upload').addEventListener('click', event => common.alertOpen(alertList.upload))
     }
 }
 
@@ -256,21 +289,62 @@ let alertList = {
     upload : {
         text : ['현재 교재의 섬네일이 있습니다.', '새로 변경하시겠습니까?'],
         button : ['확인', '취소'],
-        function : ['function1', 'function2']
+        function : ['function1', common.alertClass]
     },
     cancel : {
         text : ['변경사항이 있습니다.', '저장하지 않고 취소하시겠습니까?'],
         button : ['확인', '취소'],
-        function : ['function1', 'function2']
+        function : ['function1', common.alertClass]
     },
     delete : {
         text : ['현재의 교재를', '정말 삭제하시겠습니까?'],
         button : ['확인', '취소'],
-        function : ['function1', 'function2']
+        function : ['function1', common.alertClass]
     },
     save : {
         text : ['교재가 저장 되었습니다.'],
         button : ['확인'],
-        function : ['function1']
+        function : [setBookAPI]
     },
+}
+
+function setBookAPI(){
+
+    let option = {}
+
+    let rev = document.querySelector('.year .checked button').textContent == '2015' ? 15 : 22
+    let sch = document.querySelector('.school .checked button').textContent == '초' ? 'E' : document.querySelector('.school .checked button').textContent == '중' ? 'M' : 'H'
+    let grd = document.querySelector('.grade .checked button').textContent
+    let sem = document.querySelector('.semester .checked button').textContent
+
+    let brand = document.querySelectorAll('.brand .checked>button')
+    let brandArr = []
+    for(let i = 0; i < brand.length; i++) {
+        brandArr.push(brand[i].value)
+    }
+
+    option.cs_code = `${rev}${sch}${grd}${sem}`;
+    option.brand = brandArr[brandArr.length - 1];
+
+    option.is_activ = document.querySelectorAll('.right .select .select-value')[1].textContent == '교재노출' ? 1 : 0
+    option.status = document.querySelectorAll('.right .select .select-value')[2].textContent == '검수 대기' ? 0 : document.querySelectorAll('.right .select .select-value')[2].textContent == '검수 중' ? 1 : 2
+
+    let set_field = [];
+    let field = document.querySelectorAll('.input-box input')
+    if(register){
+        option.bk_no = ''
+        for(let i = 0; i < field.length; i++) {
+            let name = field[i].getAttribute('id')
+            let value = Number(field[i].value)
+
+            set_field.push(name)
+            option[name] = value
+        }
+        option.set_field = set_field
+        console.log(option)
+    }
+
+    let call = API.apiCall(API.url['setBookInfo'], option)
+    console.log(call)
+    common.alertClass()
 }
