@@ -73,6 +73,7 @@ export function alertOpen(data) {
 }
 
 export function alertClass() {
+    let alertBox = document.querySelector('.alert')
     document.querySelector('.alert').classList.add('out');
     alertBox.querySelector('.alert-top button').removeEventListener('click', alertClass)
 }
@@ -82,11 +83,11 @@ export function alertClass() {
 export function fileName() {
     let filter = document.querySelector('.filter')
 
-    let rev = filter.querySelector('.year .checked button').textContent.substring(2)
-    let sch = filter.querySelector('.school .checked button').textContent
-    let grd = filter.querySelector('.grade .checked button').textContent
-    let sem = filter.querySelector('.sem .checked button').textContent
-    let brand = filter.querySelector('.brand > .checked button').textContent
+    let rev = filter.querySelector('.year .checked').textContent.substring(2)
+    let sch = filter.querySelector('.school .checked').textContent
+    let grd = filter.querySelector('.grade .checked').textContent
+    let sem = filter.querySelector('.semester .checked').textContent
+    let brand = filter.querySelector('.brand > li > .checked').textContent
 
     switch(sch){
         case '초': sch = 'E'; break;
@@ -102,8 +103,8 @@ export function fileName() {
         '노벰' : 'NO',
     }
     brand = brandObj[brand]
-    if(document.querySelector('.brand > .checked div')) {
-        brand = `${brand.substring(0, 1)}${document.querySelector('.brand .checked .checked button').textContent}`
+    if(document.querySelector('.brand > .checked + ul')) {
+        brand = `${brand.substring(0, 1)}${document.querySelector('.brand .checked + ul .checked').textContent}`
     }
 
     let name = `bookcover_${rev}${sch}${grd}${sem}${brand}.jpg`

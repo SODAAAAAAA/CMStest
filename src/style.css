@@ -103,6 +103,9 @@ input:not([type="checkbox"])::placeholder {
     color: #ccc;
 }
 
+input:-webkit-autofill { -webkit-box-shadow: 0 0 0 30px #fff inset ; -webkit-text-fill-color: #000; }
+input:-webkit-autofill, input:-webkit-autofill:hover, input:-webkit-autofill:focus, input:-webkit-autofill:active { transition: background-color 5000s ease-in-out 0s; }
+
 input[type="file"] {
     display: none;
 }
@@ -111,6 +114,52 @@ input[type="number"]::-webkit-outer-spin-button,
 input[type="number"]::-webkit-inner-spin-button {
     -webkit-appearance: none;
     margin: 0;
+}
+
+input[type="checkbox"] {
+    display: none;
+}
+
+input[type="checkbox"] + label {
+    position: relative;
+    padding-left: 21px;
+    cursor: pointer;
+}
+
+input[type="checkbox"] + label::before {
+    content: '';
+    width: 16px;
+    height: 16px;
+    box-sizing: border-box;
+    border-radius: 4px;
+    background: #fff;
+    border: 1px solid #ccc;
+    display: block;
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+input[type="checkbox"]:checked + label::before {
+    background: #00a37f;
+    border: 0;
+}
+
+input[type="checkbox"]:checked + label::after {
+    content: '\2713';
+    font-size: 17px;
+    font-weight: bold;
+    color: #fff;
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 16px;
+    height: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .select {
@@ -304,7 +353,7 @@ header button {
     border-top: 1px solid #f6f6f6;
 }
 
-.filter .brand .checked ul {
+.filter .brand .checked + ul {
     display: flex;
 }
 
@@ -314,7 +363,7 @@ header button {
     font-size: 17px;
     letter-spacing: -0.68px;
     height: 40px;
-    padding: 0 20px;
+    padding: 0 23px 0 20px;
     position: relative;
 }
 
@@ -324,14 +373,14 @@ header button {
     height: calc(100% - 10px);
     background: #f6f6f6;
     position: absolute;
-    left: 0;
+    left: -1px;
     top: 50%;
     transform: translateY(-50%);
+    z-index: 0;
 }
 
 .filter li:first-child button::after,
-.filter .checked > button::after,
-.filter .checked + li button::after {
+.filter .checked::after {
     display: none;
 }
 
@@ -345,10 +394,12 @@ header button {
     border-bottom-right-radius: 4px;
 }
 
-.filter .checked > button {
+.filter .checked {
     background: #fff;
     border: 2px solid #00a37f;
     color: #00a37f;
+    position: relative;
+    z-index: 1;
 }
 
 .filter li ul button {
@@ -360,9 +411,9 @@ header button {
 
 .filter .year {
     position: absolute;
-    left: 88px;
+    left: 91px;
     top: 53px;
-    width: 166px;
+    width: 175px;
 }
 
 .filter .year li {
@@ -437,9 +488,13 @@ header button {
 }
 
 .book-info .bookcover div:first-child {
-    width: 170px;
+    width: 197px;
     height: 250px;
     background: #ccc;
+}
+
+.book-info .bookcover div:first-child img {
+    width: 100%;
 }
 
 .book-info .bookcover div:last-child {
@@ -462,6 +517,11 @@ header button {
     justify-content: space-between;
     align-items: center;
     margin: 10px 0;
+}
+
+.book-info .input-box p {
+    font-size: 18px;
+    font-weight: 600;
 }
 
 .book-info .right {
