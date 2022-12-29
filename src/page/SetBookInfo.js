@@ -164,9 +164,8 @@ function createInfo(data, bookNum) {
 
     //썸네일 삭제 여부
     bookInfoBox.querySelector('.upload').addEventListener('click', event => {
-        console.log('click')
-        if(bookInfoBox.querySelector('#file-upload').files.length > 0) {
-            console.log(bookInfoBox.querySelector('#file-upload').files.length)
+        let src = bookInfoBox.querySelector('.bookcover div img').src
+        if(src.includes('png') || src.includes('jpg') || src.includes('jpeg')) {
             common.alertOpen(alertList.upload)
         }
     } )
@@ -175,6 +174,7 @@ function createInfo(data, bookNum) {
     bookInfoBox.querySelector('.bookcover .delete').addEventListener('click', function() {
         bookInfoBox.querySelector('.bookcover div img').src = ''
         bookInfoBox.querySelector('#file-upload').value = ''
+        bookInfoBox.querySelector('#file-upload').disabled = false
     })
 
     register ? registerInfo(bookInfoBox, data) : fixInfo(bookInfoBox, data, bookNum)
@@ -188,8 +188,6 @@ function readImage(input) {
         
         reader.onload = (e) => {
             const previewImage = document.querySelector('.bookcover div img');
-
-            console.log(previewImage)
             previewImage.src = e.target.result;
         }
         reader.readAsDataURL(input.files[0]);
@@ -355,7 +353,10 @@ function setBookAPI(data, defaultData){
     option.bk_type = CM.getBookType(data.brand[0])
     option.bk_level = CM.getBookLevel(data.brand[0])
 
-    // option.bookcover = common.fileName()
+    let bookcover = document.querySelector('.bookcover div img').src
+    if(bookcover.includes('base64')) {
+        option.bk_cover = bookcover
+    }
 
     option.is_activ = document.querySelectorAll('.right .select .select-value')[1].textContent == '교재숨김' ? 0 : 1
     option.status = document.querySelectorAll('.right .select .select-value')[2].textContent == '검수 완료' ? 2 : document.querySelectorAll('.right .select .select-value')[2].textContent == '검수 중' ? 1 : 0
@@ -367,7 +368,7 @@ function setBookAPI(data, defaultData){
     }
     
     if(register){
-        option.bk_no = null
+        option.bk_no = ""
         option.set_field = Object.keys(option)
     } else {
         let optionKeys = Object.keys(option)
