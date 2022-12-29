@@ -20,7 +20,7 @@ export class SelectBox {
             this.selectBox.querySelector('.option').appendChild(option)
         }
 
-        this.value = this.selectBox.querySelector('.select-value').text
+        this.value = this.selectBox.querySelector('.select-value').textContent
 
         this.selectBox.onclick = (e) => {
             this.selectBox.querySelector('.option').classList.toggle('active')
@@ -65,9 +65,8 @@ export function alertOpen(data) {
         cancelBtn.style.display = 'inline'
     }
 
-    for(let i = 0; i < document.querySelectorAll('.alert-bottom button').length; i++) {
-        document.querySelectorAll('.alert-bottom button')[i].onclick = data.function[i]
-    }
+    document.querySelectorAll('.alert-bottom button')[0].onclick = data.function[0]
+    document.querySelectorAll('.alert-bottom button')[1].onclick = alertClass
 
     alertBox.querySelector('.alert-top button').addEventListener('click', alertClass)
 }

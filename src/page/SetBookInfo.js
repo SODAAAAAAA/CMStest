@@ -4,15 +4,13 @@ import API from "../api";
 
 const Filter = new CM.FilterButton(false,"set");
 let setInfo = false;
-let register = false; // 등록/수정 여부 true: 등록
-export default function setBookInfo(bookNum){
+export default function setBookInfo(bookInfo){
 
     const filterButtons = document.getElementsByClassName("filter")[0].getElementsByTagName("button");
 
     for(let i=0,j=filterButtons.length; i<j; i++){
         filterButtons[i].addEventListener("click", function(){
             console.log(Filter.select);
-
             if(!setInfo){
                 let complete = true
                 for (let keys in Filter.select){
@@ -21,16 +19,29 @@ export default function setBookInfo(bookNum){
                 if(complete){
                     setInfo = true;
 
-                    createInfo(Filter.select, bookNum)
+                    createInfo(Filter.select, bookInfo)
+                }
+            } else {
+                document.getElementById("contents").replaceChildren()
+                
+                let complete = true
+                for (let keys in Filter.select){
+                    if(Filter.select[keys].length ==0) complete = false;
+                }
+                if(complete){
+                    setInfo = true;
+
+                    createInfo(Filter.select, bookInfo)
+                } else {
+                    setInfo = false;
                 }
             }
-
 
         })
     }
 }
 
-function createInfo(data, bookNum) {
+function createInfo(data, bookInfo) {
     //박스 생성
     const bookInfoBox = document.createElement('div')
     bookInfoBox.setAttribute('class', 'book-info')
@@ -49,7 +60,7 @@ function createInfo(data, bookNum) {
                     <img>
                 </div>
                 <div>
-                    <input type="file" accept="image/*" id="file-upload" ${register ? '' : 'disabled'}>
+                    <input type="file" accept="image/*" id="file-upload" ${!bookInfo.bk_no ? '' : 'disabled'}>
                     <label class="upload" type="button" value="upload" for="file-upload">↑</label>
                     <button class="delete" type="button">×</button>
                 </div>
@@ -58,9 +69,9 @@ function createInfo(data, bookNum) {
         </div>
         <div class="right"></div>
         <div class="bottom">
-            <button class="btn btn-white" type="button" value="cancel">취소</button>
-            ${register ? '' : '<button class="btn btn-gray" type="button" value="delete">삭제</button>'}
-            <button class="btn btn-green" type="button" value="save">저장</button>
+            <button class="btn btn-white btn-cancel" type="button" value="cancel">취소</button>
+            ${!bookInfo.bk_no ? '' : '<button class="btn btn-gray btn-delete" type="button" value="delete">삭제</button>'}
+            <button class="btn btn-green btn-save" type="button" value="save">저장</button>
         </div>
     </form>`
     document.getElementById("contents").appendChild(bookInfoBox)
@@ -68,17 +79,13 @@ function createInfo(data, bookNum) {
     // title input
     const titleIntput = document.createElement("input");
     titleIntput.setAttribute('placeholder', '제목을 입력하세요.')
-    titleIntput.disabled = true
+    titleIntput.classList.add('disabled')
     bookInfoBox.querySelector('.title div').appendChild(titleIntput);
 
-    // 셀렉트박스
-    let selectObj = [
-        ["교재 유형 전체", "개념서", "유형서", "개념유형서"],
-        ["노출여부 전체", "교재숨김", "교재노출"],
-        ["검수 진행상태", "검수 완료", "검수 중", "검수 대기"]
-    ]
-    for(let i = 0; i < selectObj.length; i++) {
-        new common.SelectBox(selectObj[i], bookInfoBox.querySelector('.right'))
+    // 타이틀 인풋 클릭 시 체크 해제
+    function titleUnchecked(){
+        titleIntput.classList.remove('disabled')
+        bookInfoBox.querySelector('#auto-write').checked = false
     }
 
     //타이틀 자동입력
@@ -86,28 +93,48 @@ function createInfo(data, bookNum) {
     let brand = CM.getBookKor(data.brand[0])
     titleIntput.setAttribute("value", `[${school}${data.grade}-${data.semester}] ${brand}`)
 
-    bookInfoBox.querySelector('#auto-write').onclick = function(){
+    function autoTitle(){
         if(!bookInfoBox.querySelector('#auto-write').checked) {
-            titleIntput.disabled = false;
+            titleIntput.classList.remove('disabled')
         } else {
-            titleIntput.disabled = true;
+            titleIntput.classList.add('disabled')
             titleIntput.value = `[${school}${data.grade}-${data.semester}] ${brand}`
         }
     }
 
-    //셀렉트박스 자동선택
-    if(brand.includes('개념서')){
-        bookInfoBox.querySelector('.right .select-value').innerText = '개념서'
-    } else if (brand.includes('아르케')) {
-        bookInfoBox.querySelector('.right .select-value').innerText = '개념유형서'
-    } else {
-        bookInfoBox.querySelector('.right .select-value').innerText = '유형서'
+    bookInfoBox.querySelector('#auto-write').onclick = autoTitle
+    titleIntput.onkeydown = titleUnchecked
+
+    
+
+    // 셀렉트박스
+    let selectObj = [
+        ["교재 유형 전체", "개념서", "유형서", "개념유형서"],
+        ["노출여부 전체", "교재숨김", "교재노출"],
+        ["검수 진행상태", "검수 완료", "검수 중", "검수 대기"]
+    ]
+    let selectValue = []
+    for(let i = 0; i < selectObj.length; i++) {
+        let select = new common.SelectBox(selectObj[i], bookInfoBox.querySelector('.right'))
+        selectValue.push(select)
     }
 
-    //이미지 업로드
-    bookInfoBox.querySelector('#file-upload').addEventListener('change', (e) => {
-        readImage(e.target);
-    })
+    //셀렉트박스 자동선택
+    let autoValue;
+    if(brand.includes('개념서')){
+        bookInfoBox.querySelector('.right .select-value').innerText = '개념서'
+        autoValue = '개념서'
+    } else if (brand.includes('아르케')) {
+        bookInfoBox.querySelector('.right .select-value').innerText = '개념유형서'
+        autoValue = '개념유형서'
+    } else {
+        bookInfoBox.querySelector('.right .select-value').innerText = '유형서'
+        autoValue = '유형서'
+    }
+    selectValue[0].value = autoValue
+    data.select = selectValue
+
+
 
     //문제 수 input 생성
     let bk_type = CM.getBookType(data.brand[0])
@@ -144,7 +171,6 @@ function createInfo(data, bookNum) {
     }
 
     for (let i = 0; i < bookTypeInfo[bk_type].length; i++) {
-
         let title = bookTypeInfo[bk_type][i][1]
         let code = bookTypeInfo[bk_type][i][0]
         
@@ -158,38 +184,42 @@ function createInfo(data, bookNum) {
         bookInfoBox.querySelector('.input-box').appendChild(inputWrap)
     }
 
-
     //썸네일 삭제 여부
-    bookInfoBox.querySelector('.upload').addEventListener('click', event => {
+    function checkThumb(){
         let src = bookInfoBox.querySelector('.bookcover div img').src
         if(src.includes('png') || src.includes('jpg') || src.includes('jpeg')) {
             common.alertOpen(alertList.upload)
         }
-    } )
+    }
 
     //썸네일 삭제
-    bookInfoBox.querySelector('.bookcover .delete').addEventListener('click', function() {
+    function deleteThumb(){
         bookInfoBox.querySelector('.bookcover div img').src = ''
         bookInfoBox.querySelector('#file-upload').value = ''
         bookInfoBox.querySelector('#file-upload').disabled = false
-    })
-
-    register ? registerInfo(bookInfoBox, data) : fixInfo(bookInfoBox, data, bookNum)
-}
-
-
-// 이미지 업로드
-function readImage(input) {
-    if (input.files && input.files[0]) {
-        const reader = new FileReader();
-        
-        reader.onload = (e) => {
-            const previewImage = document.querySelector('.bookcover div img');
-            previewImage.src = e.target.result;
-        }
-        reader.readAsDataURL(input.files[0]);
-        input.disabled = true;
     }
+
+    // 이미지 업로드
+    function readImage(input) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            
+            reader.onload = (e) => {
+                const previewImage = document.querySelector('.bookcover div img');
+                previewImage.src = e.target.result;
+            }
+            reader.readAsDataURL(input.files[0]);
+            input.disabled = true;
+        }
+    }
+
+    bookInfoBox.querySelector('#file-upload').addEventListener('change', (e) => {
+        readImage(e.target);
+    })
+    bookInfoBox.querySelector('.upload').addEventListener('click', checkThumb)
+    bookInfoBox.querySelector('.bookcover .delete').addEventListener('click', deleteThumb)
+
+    !bookInfo.bk_no ? registerInfo(bookInfoBox, data) : fixInfo(bookInfoBox, data, bookInfo)
 }
 
 // 선택창 오픈 
@@ -204,11 +234,10 @@ function openFile() {
 
 //등록
 function registerInfo(bookInfoBox, data) {
-    console.log('등록')
     let inputValue = bookInfoBox.querySelectorAll('.input-box input')
 
-    //alert
-    bookInfoBox.querySelector('.bottom .btn-white').addEventListener('click', event => {
+    //취소 클릭 시 값이 바뀌었는지 확인
+    function changeCheck(){
         let valueBoolean = false
         for(let i = 0; i < inputValue.length; i++) {
             if(inputValue[i].value) {
@@ -220,34 +249,32 @@ function registerInfo(bookInfoBox, data) {
         } else {
             // 취소했을 때 함수
         }
-    })
+    }
 
-    bookInfoBox.querySelector('.bottom .btn-green').addEventListener('click', event => {
-        let valueBoolean = true
+    // 교재 등록
+    function register() {
         for(let i = 0; i < inputValue.length; i++) {
             if(!inputValue[i].value) {
-                valueBoolean = false
+                inputValue[i].value = 0
             }
         }
-        if(valueBoolean) {
-            setBookAPI(data)
-            common.alertOpen(alertList.save)
-        } else {
-            common.alertOpen(alertList.check)
-        }
-        
-    })
+        setBookAPI(data)
+        common.alertOpen(alertList.save)
+    }
+
+    bookInfoBox.querySelector('.bottom .btn-cancel').addEventListener('click', changeCheck)
+    bookInfoBox.querySelector('.bottom .btn-save').addEventListener('click', register)
 }
 
 
 //수정
-async function fixInfo(bookInfoBox, data, bookNum) {
+async function fixInfo(bookInfoBox, data, bookInfo) {
 
-    let book = bookNum ? '' : `${data.revision[0] == '2015' ? 15 : 22}${data.school[0]}${data.grade[0]}${data.semester[0]}`
+    let book = bookInfo.bk_no ? '' : `${data.revision[0] == '2015' ? 15 : 22}${data.school[0]}${data.grade[0]}${data.semester[0]}`
 
     //api로 기본값 채우기
     let getBookInfo = await API.apiCall(API.url['getBookInfo'], {
-        bk_no: bookNum,
+        bk_no: bookInfo.bk_no,
         book : book,
     })
     
@@ -262,33 +289,37 @@ async function fixInfo(bookInfoBox, data, bookNum) {
             }
         }
     }
+
+    let selectArr = [
+        ["교재숨김", "교재노출"],
+        ["검수 대기", "검수 중", "검수 완료"]
+    ]
+    data.select[1].value = selectArr[0][getBookInfo.is_activ]
+    data.select[2].value = selectArr[1][getBookInfo.status]
+    bookInfoBox.querySelectorAll('.right .select-value')[1].innerText = data.select[1].value
+    bookInfoBox.querySelectorAll('.right .select-value')[2].innerText = data.select[2].value
     
+
+
     //표지 이미지
     bookInfoBox.querySelector('.bookcover div img').src = getBookInfo.bk_cover
 
-    
-    //alert
-    bookInfoBox.querySelector('.bottom .btn-gray').addEventListener('click', event => common.alertOpen(alertList.delete))
 
+    // 저장
     let inputValue = bookInfoBox.querySelectorAll('.input-box input')
-    bookInfoBox.querySelector('.bottom .btn-green').addEventListener('click', event => {
-        let valueBoolean = true
+    function fix(){
         for(let i = 0; i < inputValue.length; i++) {
             if(!inputValue[i].value) {
-                valueBoolean = false
+                inputValue[i].value = 0
             }
         }
-        if(valueBoolean) {
-            setBookAPI(data, getBookInfo)
-            common.alertOpen(alertList.save)
-        } else {
-            common.alertOpen(alertList.check)
-        }
-        
-    })
+        setBookAPI(data, getBookInfo)
+        common.alertOpen(alertList.save)
+    }
+
 
     //값 변경 유무
-    bookInfoBox.querySelector('.bottom .btn-white').addEventListener('click', event => {
+    function checkChange(){
         let change = false
         for(let i = 0; i < codeArr.length; i++) {
             if(getBookInfo[codeArr[i]]) {
@@ -303,32 +334,34 @@ async function fixInfo(bookInfoBox, data, bookNum) {
         } else {
             // 취소했을 때 함수
         }
-    })
+    }
+
+
+
+    //alert
+    bookInfoBox.querySelector('.bottom .btn-delete').addEventListener('click', event => common.alertOpen(alertList.delete))
+    bookInfoBox.querySelector('.bottom .btn-save').addEventListener('click', fix)
+    bookInfoBox.querySelector('.bottom .btn-cancel').addEventListener('click', checkChange)
 }
 
 let alertList = {
     upload : {
         text : ['현재 교재의 섬네일이 있습니다.', '새로 변경하시겠습니까?'],
         button : ['확인', '취소'],
-        function : [openFile, common.alertClass]
+        function : [openFile]
     },
     cancel : {
         text : ['변경사항이 있습니다.', '저장하지 않고 취소하시겠습니까?'],
         button : ['확인', '취소'],
-        function : ['function1', common.alertClass]
+        function : ['function1']
     },
     delete : {
         text : ['현재의 교재를', '정말 삭제하시겠습니까?'],
         button : ['확인', '취소'],
-        function : ['function1', common.alertClass]
+        function : ['function1']
     },
     save : {
         text : ['교재가 저장 되었습니다.'],
-        button : ['확인'],
-        function : [common.alertClass]
-    },
-    check : {
-        text : ['빈칸을 채워주세요.'],
         button : ['확인'],
         function : [common.alertClass]
     },
@@ -355,8 +388,8 @@ function setBookAPI(data, defaultData){
         option.bk_cover = bookcover
     }
 
-    option.is_activ = document.querySelectorAll('.right .select .select-value')[1].textContent == '교재숨김' ? 0 : 1
-    option.status = document.querySelectorAll('.right .select .select-value')[2].textContent == '검수 완료' ? 2 : document.querySelectorAll('.right .select .select-value')[2].textContent == '검수 중' ? 1 : 0
+    option.is_activ = data.select[1].value == '교재숨김' ? 0 : 1
+    option.status = data.select[2].value == '검수 완료' ? 2 : data.select[2] == '검수 중' ? 1 : 0
     for(let i = 0; i < field.length; i++) {
         let name = field[i].getAttribute('id').toLowerCase()
         let value = field[i].value
@@ -364,8 +397,8 @@ function setBookAPI(data, defaultData){
         option[name] = value
     }
     
-    if(register){
-        option.bk_no = ""
+    if(!defaultData){
+        option.bk_no = null
         option.set_field = Object.keys(option)
     } else {
         let optionKeys = Object.keys(option)
@@ -383,5 +416,4 @@ function setBookAPI(data, defaultData){
 
     let call = API.apiCall(API.url['setBookInfo'], option)
     console.log(call)
-    common.alertClass()
 }

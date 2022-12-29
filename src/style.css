@@ -351,6 +351,14 @@ header button {
     top: 100%;
     display: none;
     border-top: 1px solid #f6f6f6;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.filter .brand > li:nth-child(2) ul {
+    right: 0;
+    left: auto;
+    transform: none;
 }
 
 .filter .brand .checked + ul {
@@ -363,8 +371,9 @@ header button {
     font-size: 17px;
     letter-spacing: -0.68px;
     height: 40px;
-    padding: 0 23px 0 20px;
+    padding: 0 21px 0 18px;
     position: relative;
+    border: 2px solid #bec1c4;
 }
 
 .filter button::after {
@@ -373,7 +382,7 @@ header button {
     height: calc(100% - 10px);
     background: #f6f6f6;
     position: absolute;
-    left: -1px;
+    left: -3px;
     top: 50%;
     transform: translateY(-50%);
     z-index: 0;
@@ -396,7 +405,7 @@ header button {
 
 .filter .checked {
     background: #fff;
-    border: 2px solid #00a37f;
+    border-color: #00a37f;
     color: #00a37f;
     position: relative;
     z-index: 1;
@@ -404,7 +413,7 @@ header button {
 
 .filter li ul button {
     height: 30px;
-    padding: 0 10px;
+    padding: 0 8px 0 7px;
     border-top-left-radius: 0 !important;
     border-top-right-radius: 0 !important;
 }
@@ -472,7 +481,7 @@ header button {
     text-align: center;
 }
 
-.book-info .title input:not([type="checkbox"]):disabled {
+.book-info .title input:not([type="checkbox"]).disabled {
     background: #dcdee0;
 }
 
