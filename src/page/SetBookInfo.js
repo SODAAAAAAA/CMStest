@@ -20,9 +20,6 @@ export default function setBookInfo(bookNum){
                 }
                 if(complete){
                     setInfo = true;
-                    
-                    //임시
-                    bookNum = 27
 
                     createInfo(Filter.select, bookNum)
                 }
