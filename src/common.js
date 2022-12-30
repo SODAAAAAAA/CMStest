@@ -12,41 +12,58 @@ export class SelectBox {
         this.selectBox.setAttribute('class', 'select')
         let optionValue = this.option
 
-        this.selectBox.innerHTML = `<button class="select-value" type="button">${optionValue[0]}</button><ul class="option"></ul>`
+        this.valueBox = document.createElement('button')
+        this.valueBox.setAttribute('class', 'select-value')
+        this.valueBox.setAttribute('type', 'button')
+        this.valueBox.innerText = optionValue[0]
 
+        let optionBox = document.createElement('ul')
+        optionBox.setAttribute('class', 'option')
+
+        this.selectBox.appendChild(this.valueBox)
+        this.selectBox.appendChild(optionBox)
+
+        let optionBtn = []
         for(let i = 1; i < optionValue.length; i++) {
-            let option = document.createElement('li')
-            option.innerHTML = `<button type="button">${optionValue[i]}</button>`
-            this.selectBox.querySelector('.option').appendChild(option)
+            let optionLi = document.createElement('li')
+            let selectBtn = document.createElement('button')
+            selectBtn.setAttribute('type', 'button')
+            selectBtn.innerText = optionValue[i]
+            optionLi.appendChild(selectBtn)
+            optionBox.appendChild(optionLi)
+
+            optionBtn.push(selectBtn)
         }
 
-        this.value = this.selectBox.querySelector('.select-value').textContent
+        this.value = this.valueBox.textContent
 
         this.selectBox.onclick = (e) => {
-            this.selectBox.querySelector('.option').classList.toggle('active')
-            let selectBtn = this.selectBox.querySelectorAll('.option li button')
+            optionBox.classList.toggle('active')
 
-            for(let i = 0; i < selectBtn.length; i++) {
-                if(e.target == selectBtn[i]) {
+            for(let i = 0; i < optionBtn.length; i++) {
+                if(e.target == optionBtn[i]) {
                     this.value = e.target.textContent
-                    this.selectBox.querySelector('.select-value').innerText = this.value
+                    this.valueBox.innerText = this.value
                 }
             }
         }
-
-        window.addEventListener('click', (e) => {
-            if(e.target !== this.selectBox.querySelector('.select-value')) {
-                this.selectBox.querySelector('.option').classList.remove('active')
-            }
-        })
         
         this.location.appendChild(this.selectBox)
     }
 }
 
 // alert 레이어
-// 
-export function alertOpen(data) {
+export function alertOpen(data, pre) {
+
+    if(pre != null) {
+        if(pre.name == 'checkChange') {
+            pre()
+            return
+        } else {
+            pre()
+        }
+    }
+
     let alertBox = document.querySelector('.alert')
 
     alertBox.classList.remove('out')
@@ -111,3 +128,11 @@ export function fileName() {
     console.log(name)
     return name
 }
+
+window.addEventListener('click', (e) => {
+    for(let i = 0; i < document.querySelectorAll('.select-value').length; i++) {
+        if(e.target !== document.querySelectorAll('.select-value')[i]) {
+            document.querySelectorAll('.option')[i].classList.remove('active')
+        }
+    }
+})

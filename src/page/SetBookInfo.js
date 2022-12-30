@@ -60,7 +60,7 @@ function createInfo(data, bookInfo) {
                     <img>
                 </div>
                 <div>
-                    <input type="file" accept="image/*" id="file-upload" ${!bookInfo.bk_no ? '' : 'disabled'}>
+                    <input type="file" accept="image/*" id="file-upload" ${bookInfo == null ? '' : 'disabled'}>
                     <label class="upload" type="button" value="upload" for="file-upload">↑</label>
                     <button class="delete" type="button">×</button>
                 </div>
@@ -70,7 +70,7 @@ function createInfo(data, bookInfo) {
         <div class="right"></div>
         <div class="bottom">
             <button class="btn btn-white btn-cancel" type="button" value="cancel">취소</button>
-            ${!bookInfo.bk_no ? '' : '<button class="btn btn-gray btn-delete" type="button" value="delete">삭제</button>'}
+            ${bookInfo == null ? '' : '<button class="btn btn-gray btn-delete" type="button" value="delete">삭제</button>'}
             <button class="btn btn-green btn-save" type="button" value="save">저장</button>
         </div>
     </form>`
@@ -219,7 +219,7 @@ function createInfo(data, bookInfo) {
     bookInfoBox.querySelector('.upload').addEventListener('click', checkThumb)
     bookInfoBox.querySelector('.bookcover .delete').addEventListener('click', deleteThumb)
 
-    !bookInfo.bk_no ? registerInfo(bookInfoBox, data) : fixInfo(bookInfoBox, data, bookInfo)
+    bookInfo == null ? registerInfo(bookInfoBox, data) : fixInfo(bookInfoBox, data, bookInfo)
 }
 
 // 선택창 오픈 
@@ -237,7 +237,7 @@ function registerInfo(bookInfoBox, data) {
     let inputValue = bookInfoBox.querySelectorAll('.input-box input')
 
     //취소 클릭 시 값이 바뀌었는지 확인
-    function changeCheck(){
+    function checkChange(){
         let valueBoolean = false
         for(let i = 0; i < inputValue.length; i++) {
             if(inputValue[i].value) {
@@ -262,8 +262,12 @@ function registerInfo(bookInfoBox, data) {
         common.alertOpen(alertList.save)
     }
 
-    bookInfoBox.querySelector('.bottom .btn-cancel').addEventListener('click', changeCheck)
-    bookInfoBox.querySelector('.bottom .btn-save').addEventListener('click', register)
+    let funcArr = [checkChange, register]
+
+    for(let i = 0; i < funcArr.length; i++) {
+        let btnType = funcArr[i] == checkChange ? 'cancel' : 'save'
+        bookInfoBox.querySelectorAll('.bottom .btn')[i].addEventListener('click', event => common.alertOpen(alertList[btnType], funcArr[i]))
+    }
 }
 
 
@@ -291,13 +295,13 @@ async function fixInfo(bookInfoBox, data, bookInfo) {
     }
 
     let selectArr = [
-        ["교재숨김", "교재노출"],
-        ["검수 대기", "검수 중", "검수 완료"]
+        ["교재숨김", "교재노출", "노출여부 전체"],
+        ["검수 대기", "검수 중", "검수 완료", "검수 진행상태"]
     ]
-    data.select[1].value = selectArr[0][getBookInfo.is_activ]
-    data.select[2].value = selectArr[1][getBookInfo.status]
-    bookInfoBox.querySelectorAll('.right .select-value')[1].innerText = data.select[1].value
-    bookInfoBox.querySelectorAll('.right .select-value')[2].innerText = data.select[2].value
+    data.select[1].value = selectArr[0][getBookInfo.is_activ] == undefined ? selectArr[0][2] : selectArr[0][getBookInfo.is_activ]
+    data.select[2].value = selectArr[1][getBookInfo.status] == undefined ? selectArr[1][3] : selectArr[1][getBookInfo.is_activ]
+    data.select[1].valueBox.innerText = data.select[1].value
+    data.select[2].valueBox.innerText = data.select[2].value
     
 
 
@@ -306,8 +310,8 @@ async function fixInfo(bookInfoBox, data, bookInfo) {
 
 
     // 저장
-    let inputValue = bookInfoBox.querySelectorAll('.input-box input')
     function fix(){
+        let inputValue = bookInfoBox.querySelectorAll('.input-box input')
         for(let i = 0; i < inputValue.length; i++) {
             if(!inputValue[i].value) {
                 inputValue[i].value = 0
@@ -339,24 +343,18 @@ async function fixInfo(bookInfoBox, data, bookInfo) {
 
 
     //alert
-    bookInfoBox.querySelector('.bottom .btn-delete').addEventListener('click', event => common.alertOpen(alertList.delete))
-    bookInfoBox.querySelector('.bottom .btn-save').addEventListener('click', fix)
-    bookInfoBox.querySelector('.bottom .btn-cancel').addEventListener('click', checkChange)
+    
+    let funcArr = [checkChange, null, fix]
+    
+    for(let i = 0; i < funcArr.length; i++) {
+        let btnType = funcArr[i] == checkChange ? 'cancel' : funcArr[i] == fix ? 'save' : 'delete'
+        bookInfoBox.querySelectorAll('.bottom .btn')[i].addEventListener('click', event => common.alertOpen(alertList[btnType], funcArr[i]))
+    }
 }
 
 let alertList = {
-    upload : {
-        text : ['현재 교재의 섬네일이 있습니다.', '새로 변경하시겠습니까?'],
-        button : ['확인', '취소'],
-        function : [openFile]
-    },
     cancel : {
         text : ['변경사항이 있습니다.', '저장하지 않고 취소하시겠습니까?'],
-        button : ['확인', '취소'],
-        function : ['function1']
-    },
-    delete : {
-        text : ['현재의 교재를', '정말 삭제하시겠습니까?'],
         button : ['확인', '취소'],
         function : ['function1']
     },
@@ -364,6 +362,16 @@ let alertList = {
         text : ['교재가 저장 되었습니다.'],
         button : ['확인'],
         function : [common.alertClass]
+    },
+    delete : {
+        text : ['현재의 교재를', '정말 삭제하시겠습니까?'],
+        button : ['확인', '취소'],
+        function : ['function1']
+    },
+    upload : {
+        text : ['현재 교재의 섬네일이 있습니다.', '새로 변경하시겠습니까?'],
+        button : ['확인', '취소'],
+        function : [openFile]
     },
 }
 
@@ -389,7 +397,7 @@ function setBookAPI(data, defaultData){
     }
 
     option.is_activ = data.select[1].value == '교재숨김' ? 0 : 1
-    option.status = data.select[2].value == '검수 완료' ? 2 : data.select[2] == '검수 중' ? 1 : 0
+    option.status = data.select[2].value == '검수 완료' ? 2 : data.select[2].value == '검수 중' ? 1 : 0
     for(let i = 0; i < field.length; i++) {
         let name = field[i].getAttribute('id').toLowerCase()
         let value = field[i].value
